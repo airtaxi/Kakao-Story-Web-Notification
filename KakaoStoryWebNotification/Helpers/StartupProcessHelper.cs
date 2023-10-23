@@ -1,11 +1,12 @@
 ﻿using Microsoft.Win32;
+using System.Diagnostics;
 
 namespace KakaoStoryWebNotification.Helpers;
 
 public static class StartupProcessHelper
 {
 	private static readonly string AppName = "KakaoStoryWebNotification";
-	private static readonly string AppPath = System.Reflection.Assembly.GetExecutingAssembly().Location[..^4] + ".exe";
+	private static readonly string AppPath = Process.GetCurrentProcess().MainModule.FileName;
 
 	public static bool IsStartupProcess
 	{
