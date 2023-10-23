@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using System.Reflection;
 
-namespace KakaoStroyWebNotification.ViewModels;
+namespace KakaoStoryWebNotification.ViewModels;
 
 public partial class TaskbarViewModel : ObservableObject
 {

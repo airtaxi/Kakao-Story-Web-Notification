@@ -6,9 +6,9 @@ using System.Net;
 using WebDriverManager.DriverConfigs.Impl;
 using WebDriverManager;
 using SeleniumConfigurator;
-using KakaoStroyWebNotification.Api;
+using KakaoStoryWebNotification.Api;
 
-namespace KakaoStroyWebNotification;
+namespace KakaoStoryWebNotification;
 
 public static class LoginManager
 {

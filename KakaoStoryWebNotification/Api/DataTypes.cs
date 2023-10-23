@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace KakaoStroyWebNotification.Api;
+namespace KakaoStoryWebNotification.Api;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>")]
 public partial class ApiHandler

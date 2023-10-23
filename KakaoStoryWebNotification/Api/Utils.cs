@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using static KakaoStroyWebNotification.Api.ApiHandler.DataType;
+using static KakaoStoryWebNotification.Api.ApiHandler.DataType;
 
-namespace KakaoStroyWebNotification.Api;
+namespace KakaoStoryWebNotification.Api;
 
 public static class Utils
 {

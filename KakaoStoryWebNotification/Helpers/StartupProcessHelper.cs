@@ -1,11 +1,10 @@
 ﻿using Microsoft.Win32;
-using Org.BouncyCastle.Asn1.Crmf;
 
-namespace KakaoStroyWebNotification;
+namespace KakaoStoryWebNotification.Helpers;
 
 public static class StartupProcessHelper
 {
-	private static readonly string AppName = "KakaoStroyWebNotification";
+	private static readonly string AppName = "KakaoStoryWebNotification";
 	private static readonly string AppPath = System.Reflection.Assembly.GetExecutingAssembly().Location[..^4] + ".exe";
 
 	public static bool IsStartupProcess

@@ -2,14 +2,14 @@
 using Newtonsoft.Json.Linq;
 using System.IO;
 
-namespace KakaoStroyWebNotification;
+namespace KakaoStoryWebNotification;
 
 public class Configuration
 {
 	private readonly static object LockObject = new();
 	private readonly static string BasePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
-    private const string ConfigurationDirectoryName = "KakaoStroyWebNotification";
+    private const string ConfigurationDirectoryName = "KakaoStoryWebNotification";
 
     private const string ConfigurationFileName = "settings.json";
 	private const string ConfigurationBackupFileName = "settings.json.bak";

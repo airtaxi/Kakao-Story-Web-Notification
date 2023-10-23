@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using H.NotifyIcon;
 using H.NotifyIcon.EfficiencyMode;
-using KakaoStroyWebNotification.Api;
-using KakaoStroyWebNotification.DataTypes;
+using KakaoStoryWebNotification.Api;
+using KakaoStoryWebNotification.DataTypes;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Newtonsoft.Json;
 using System.Diagnostics;
@@ -12,18 +12,57 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace KakaoStroyWebNotification;
+namespace KakaoStoryWebNotification;
 
 public partial class App
 {
+
 	// Constants
 	private const int NotificationCheckIntervalInMilliseconds = 1000;
 	private const string AccountCredentialsFileName = "account.json";
+	private const int UpdateCheckIntervalInMinutes = 10;
+
+	// Readonly static fields
+	private static readonly Timer UpdateCheckTimer;
 
 	// Fields
 	private static Timer s_checkNotificationCheckTimer;
 	private static string s_latestNotificationId;
 	private static DateTime? s_lastNotificationTimestamp;
+
+	static App()
+	{
+		UpdateCheckTimer = new(UpdateCheckTimerCallback, null, (int)TimeSpan.FromMinutes(UpdateCheckIntervalInMinutes).TotalMilliseconds, Timeout.Infinite);
+	}
+
+	private const string UpdateAvailableTitle = "Update Available";
+	private static async void UpdateCheckTimerCallback(object state) => await CheckForUpdateAsync();
+
+	private static async Task CheckForUpdateAsync()
+	{
+		try
+		{
+			var url = "https://raw.githubusercontent.com/airtaxi/Kakao-Story-Web-Notification/master/latest";
+			var remoteVersionString = await HttpHelper.GetContentFromUrlAsync(url);
+			if (remoteVersionString is null) return;
+
+			var localVersion = Assembly.GetExecutingAssembly().GetName().Version;
+			var remoteVersion = new Version(remoteVersionString);
+			if (localVersion >= remoteVersion) return;
+
+			var configurationKey = "versionChecked" + remoteVersionString;
+			var hasNotificationShownForRemoteVersion = Configuration.GetValue<bool?>(configurationKey) ?? false;
+			if (hasNotificationShownForRemoteVersion) return;
+			Configuration.SetValue(configurationKey, true);
+
+			var builder = new ToastContentBuilder()
+			.AddText(UpdateAvailableTitle)
+			.AddText($"A new version ({remoteVersion}) is available.\nDo you want to download it?")
+			.AddArgument("versionString", remoteVersionString);
+			builder.Show();
+		}
+		finally { UpdateCheckTimer.Change((int)TimeSpan.FromMinutes(UpdateCheckIntervalInMinutes).TotalMilliseconds, Timeout.Infinite); }
+	}
 
 	protected override void OnStartup(StartupEventArgs e)
 	{

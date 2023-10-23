@@ -7,10 +7,10 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using static KakaoStroyWebNotification.Api.ApiHandler.DataType;
-using static KakaoStroyWebNotification.Api.ApiHandler.DataType.CommentData;
+using static KakaoStoryWebNotification.Api.ApiHandler.DataType;
+using static KakaoStoryWebNotification.Api.ApiHandler.DataType.CommentData;
 
-namespace KakaoStroyWebNotification.Api;
+namespace KakaoStoryWebNotification.Api;
 
 public partial class ApiHandler
 {

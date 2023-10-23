@@ -1,4 +1,4 @@
-﻿namespace KakaoStroyWebNotification.DataTypes;
+﻿namespace KakaoStoryWebNotification.DataTypes;
 
 public class AccountCredentials
 {
