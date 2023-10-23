@@ -3,6 +3,7 @@ using H.NotifyIcon;
 using H.NotifyIcon.EfficiencyMode;
 using KakaoStoryWebNotification.Api;
 using KakaoStoryWebNotification.DataTypes;
+using KakaoStoryWebNotification.Helpers;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Newtonsoft.Json;
 using System.Diagnostics;
@@ -122,7 +123,7 @@ public partial class App
 			var jsonText = JsonConvert.SerializeObject(accountCredentials, Formatting.Indented);
 			File.WriteAllText(AccountCredentialsFileName, jsonText);
 			new ToastContentBuilder()
-				.AddText("카카오스토리 웹 알리미")
+				.AddText("카카오 스토리 웹 알리미")
 				.AddText("설정 파일이 존재하지 않아 새로 생성했습니다.\n프로그램 폴더의 account.json 파일을 수정하신 뒤, 프로그램을 재시작해주세요.")
 				.Show();
 			Environment.Exit(0);
@@ -135,7 +136,7 @@ public partial class App
 		catch (JsonException)
 		{
 			new ToastContentBuilder()
-				.AddText("카카오스토리 웹 알리미")
+				.AddText("카카오 스토리 웹 알리미")
 				.AddText("설정 파일이 손상되었습니다.\n프로그램 폴더의 account.json 파일을 수정하신 뒤, 프로그램을 재시작해주세요.")
 				.Show();
 			Environment.Exit(0);

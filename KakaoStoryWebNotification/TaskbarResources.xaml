@@ -39,7 +39,7 @@
     <tb:TaskbarIcon
         x:Key="TaskbarIcon"
         IconSource="/Icon.ico"
-        ToolTipText="카카오스토리 웹 알리미"
+        ToolTipText="카카오 스토리 웹 알리미"
         NoLeftClickDelay="True"
         ContextMenu="{StaticResource ContextMenu}">
         <tb:TaskbarIcon.DataContext>
