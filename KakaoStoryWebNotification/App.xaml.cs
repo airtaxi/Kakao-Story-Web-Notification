@@ -94,8 +94,18 @@ public partial class App
 	private static void OnToastActivated(ToastNotificationActivatedEventArgsCompat e)
 	{
 		var args = ToastArguments.Parse(e.Argument);
-		var url = args["url"];
-		Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+
+		if(args.Any(x => x.Key == "url")) // Kakao Story Toast Notification
+		{
+			var url = args["url"];
+			Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+		}
+		else if(args.Any(x => x.Key == "versionString")) // Program Update Toast Notification
+		{
+			var versionString = args["versionString"];
+			var url = "https://github.com/airtaxi/Kakao-Story-Web-Notification/releases/tag/" + versionString;
+			Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+		}
 	}
 
 	private static void InitialzeApiHandlerEvent()
