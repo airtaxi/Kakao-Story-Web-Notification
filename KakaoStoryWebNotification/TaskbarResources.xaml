@@ -8,8 +8,8 @@
         x:Shared="false"
         x:Key="ContextMenu">
         <MenuItem
-            Header="제작자: 이호원"
-            IsEnabled="False"/>
+            Header="제작자 블로그 방문"
+            Command="{Binding OpenAuthorBlogUrlCommand}"/>
         <MenuItem
             Header="{Binding VersionText}"
             IsEnabled="False"/>

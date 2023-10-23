@@ -1,12 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using KakaoStoryWebNotification.Helpers;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace KakaoStoryWebNotification.ViewModels;
 
 public partial class TaskbarViewModel : ObservableObject
 {
+	private const string AuthorBlogUrl = "https://kagamine-rin.com";
+
 	[ObservableProperty]
 	private string _versionText = $"버전: {Assembly.GetExecutingAssembly().GetName().Version}";
 
@@ -57,6 +60,13 @@ public partial class TaskbarViewModel : ObservableObject
 		IsStartupProgram = !StartupProcessHelper.IsStartupProcess;
 		if (IsStartupProgram) StartupProcessHelper.SetupStartupProcess();
 		else StartupProcessHelper.RemoveStartupProcess();
+	}
+
+	[RelayCommand]
+	public void OpenAuthorBlogUrl()
+	{
+		var url = AuthorBlogUrl;
+		Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
 	}
 
 	[RelayCommand]
