@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace KakaoStoryWebNotification;
 
@@ -66,6 +67,10 @@ public partial class App
 	{
 		base.OnStartup(e);
 
+		Application.Current.DispatcherUnhandledException += OnApplicationUnhandledException;
+		AppDomain.CurrentDomain.UnhandledException += OnAppDomainUnhandledException;
+		TaskScheduler.UnobservedTaskException += OnTaskSchedulerUnobservedTaskException;
+
 		// Initializations
 		InitialzeToastActivationEvent();
 		InitialzeApiHandlerEvent();
@@ -80,6 +85,33 @@ public partial class App
 
 		// Set the efficiency mode
 		EfficiencyModeUtilities.SetEfficiencyMode(true);
+	}
+
+	private void OnTaskSchedulerUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e) => WriteException(e.Exception);
+	private void OnAppDomainUnhandledException(object sender, System.UnhandledExceptionEventArgs e) => WriteException(e.ExceptionObject as Exception);
+	private void OnApplicationUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+	{
+		e.Handled = true;
+		WriteException(e.Exception);
+	}
+
+	private static void WriteException(Exception exception)
+	{
+		var baseDirectory = AppContext.BaseDirectory;
+		var path = Path.Combine(baseDirectory, "error.log");
+
+		if (exception is null)
+		{
+			File.AppendAllText(path, $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] UNKNOWN\n({baseDirectory})\n\n");
+			return;
+		}
+
+		var exceptionName = exception.GetType().Name;
+
+		var text = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] ({exceptionName}) {exception?.Message ?? "UNKNOWN"}: {exception?.StackTrace ?? "UNKNOWN"}\n({baseDirectory})\n\n";
+		File.AppendAllText(path, text);
+
+		if (exception.InnerException is not null) WriteException(exception.InnerException);
 	}
 
 
