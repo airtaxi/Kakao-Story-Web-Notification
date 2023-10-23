@@ -1,1 +1,1 @@
-# KakaoStroyWebNotification
+# 카카오 스토리 웹 알리미
