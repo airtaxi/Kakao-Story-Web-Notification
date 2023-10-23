@@ -1,10 +1,7 @@
-﻿using Microsoft.Win32;
-using OpenQA.Selenium.Edge;
+﻿using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Support.UI;
 using OpenQA.Selenium;
 using System.Net;
-using WebDriverManager.DriverConfigs.Impl;
-using WebDriverManager;
 using SeleniumConfigurator;
 using KakaoStoryWebNotification.Api;
 

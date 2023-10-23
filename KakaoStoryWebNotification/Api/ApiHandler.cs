@@ -1,12 +1,9 @@
 ﻿using MimeKit;
 using Newtonsoft.Json;
 using RestSharp;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 using static KakaoStoryWebNotification.Api.ApiHandler.DataType;
 using static KakaoStoryWebNotification.Api.ApiHandler.DataType.CommentData;
 

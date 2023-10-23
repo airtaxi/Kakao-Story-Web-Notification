@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Mvvm.Input;
-using H.NotifyIcon;
+﻿using H.NotifyIcon;
 using H.NotifyIcon.EfficiencyMode;
 using KakaoStoryWebNotification.Api;
 using KakaoStoryWebNotification.DataTypes;
@@ -7,11 +6,9 @@ using KakaoStoryWebNotification.Helpers;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Newtonsoft.Json;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace KakaoStoryWebNotification;
 
