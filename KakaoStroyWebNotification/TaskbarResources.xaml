@@ -1,0 +1,49 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:vm="clr-namespace:KakaoStroyWebNotification.ViewModels"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:tb="http://www.hardcodet.net/taskbar">
+
+    <ContextMenu
+        x:Shared="false"
+        x:Key="ContextMenu">
+        <MenuItem
+            Header="제작자: 이호원"
+            IsEnabled="False"/>
+        <MenuItem
+            Header="{Binding VersionText}"
+            IsEnabled="False"/>
+
+        <Separator/>
+
+        <MenuItem
+            Header="{Binding FavoriteFriendsNotificationsConfigurationText}"
+            Command="{Binding SetupFavoriteFriendsNotificationsConfigurationCommand}"/>
+        <MenuItem
+            Header="{Binding EmotionsNotificationsConfigurationText}"
+            Command="{Binding SetupEmotionNotificationsConfigurationCommand}"/>
+        
+        <Separator/>
+
+        <MenuItem
+            Header="{Binding StartupProcessText}"
+            Command="{Binding SetupStartupProcessCommand}"/>
+
+        <Separator/>
+
+        <MenuItem
+            Header="종료"
+            Command="{Binding ExitApplicationCommand}"/>
+    </ContextMenu>
+    
+    <tb:TaskbarIcon
+        x:Key="TaskbarIcon"
+        IconSource="/Icon.ico"
+        ToolTipText="카카오스토리 웹 알리미"
+        NoLeftClickDelay="True"
+        ContextMenu="{StaticResource ContextMenu}">
+        <tb:TaskbarIcon.DataContext>
+            <vm:TaskbarViewModel/>
+        </tb:TaskbarIcon.DataContext>
+    </tb:TaskbarIcon>
+</ResourceDictionary>
