@@ -232,11 +232,11 @@ public partial class App
 		// If we don't need to show the notification, return immediately to prevent run the code below
 		if (!willShow) return;
 
-		var titleMessage = notification.message ?? "제목 없음";
-		var contentMessage = notification.content ?? "내용 없음";
-		var builder = new ToastContentBuilder()
-		.AddText(titleMessage)
-		.AddText(contentMessage);
+		var builder = new ToastContentBuilder();
+		builder.AddAttributionText("카카오 스토리 웹 알리미");
+
+		if (notification.message != null) builder.AddText(notification.message);
+		if (notification.content != null) builder.AddText(notification.content);
 
 		var thumbnailUrl = notification.thumbnail_url;
 
