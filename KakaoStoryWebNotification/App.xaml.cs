@@ -10,6 +10,7 @@ using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
+using Windows.UI.Notifications;
 
 namespace KakaoStoryWebNotification;
 
@@ -23,6 +24,7 @@ public partial class App
 
 	// Readonly static fields
 	private static readonly Timer UpdateCheckTimer;
+	private static readonly ToastNotifierCompat SharedToastNotifier;
 
 	// Fields
 	private static Timer s_checkNotificationCheckTimer;
@@ -32,6 +34,7 @@ public partial class App
 	static App()
 	{
 		UpdateCheckTimer = new(UpdateCheckTimerCallback, null, (int)TimeSpan.FromMinutes(UpdateCheckIntervalInMinutes).TotalMilliseconds, Timeout.Infinite);
+		SharedToastNotifier = ToastNotificationManagerCompat.CreateToastNotifier();
 	}
 
 	private const string UpdateAvailableTitle = "Update Available";
@@ -268,7 +271,9 @@ public partial class App
 		if (!string.IsNullOrEmpty(thumbnailUrl))
 			builder.AddHeroImage(new Uri(thumbnailUrl));
 
-		builder.Show();
+		ToastNotificationManager.History.Remove(scheme);
+		var toast = new ToastNotification(builder.GetToastContent().GetXml()) { Tag = scheme };
+		SharedToastNotifier.Show(toast);
 	}
 
 	private static string GetActivityIdFromNotification(ApiHandler.DataType.Notification notification)
