@@ -34,6 +34,8 @@ public partial class App
 	static App()
 	{
 		UpdateCheckTimer = new(UpdateCheckTimerCallback, null, (int)TimeSpan.FromMinutes(UpdateCheckIntervalInMinutes).TotalMilliseconds, Timeout.Infinite);
+
+		// Cacahe the toast notifier to save the system memory
 		SharedToastNotifier = ToastNotificationManagerCompat.CreateToastNotifier();
 	}
 
@@ -58,9 +60,10 @@ public partial class App
 			Configuration.SetValue(configurationKey, true);
 
 			var builder = new ToastContentBuilder()
-			.AddText(UpdateAvailableTitle)
-			.AddText($"A new version ({remoteVersion}) is available.\nDo you want to download it?")
-			.AddArgument("versionString", remoteVersionString);
+				.AddText(UpdateAvailableTitle)
+				.AddText($"새 버전 ({remoteVersion})이 발견되었습니다.\n다운로드 받으시겠습니까?")
+				.AddArgument("versionString", remoteVersionString);
+
 			builder.Show();
 		}
 		finally { UpdateCheckTimer.Change((int)TimeSpan.FromMinutes(UpdateCheckIntervalInMinutes).TotalMilliseconds, Timeout.Infinite); }
@@ -165,7 +168,6 @@ public partial class App
 			var jsonText = JsonConvert.SerializeObject(accountCredentials, Formatting.Indented);
 			File.WriteAllText(AccountCredentialsFileName, jsonText);
 			new ToastContentBuilder()
-				.AddText("카카오 스토리 웹 알리미")
 				.AddText("설정 파일이 존재하지 않아 새로 생성했습니다.\n프로그램 폴더의 account.json 파일을 수정하신 뒤, 프로그램을 재시작해주세요.")
 				.Show();
 			Environment.Exit(0);
@@ -178,7 +180,6 @@ public partial class App
 		catch (JsonException)
 		{
 			new ToastContentBuilder()
-				.AddText("카카오 스토리 웹 알리미")
 				.AddText("설정 파일이 손상되었습니다.\n프로그램 폴더의 account.json 파일을 수정하신 뒤, 프로그램을 재시작해주세요.")
 				.Show();
 			Environment.Exit(0);
@@ -236,7 +237,6 @@ public partial class App
 		if (!willShow) return;
 
 		var builder = new ToastContentBuilder();
-		builder.AddAttributionText("카카오 스토리 웹 알리미");
 
 		if (notification.message != null) builder.AddText(notification.message);
 		if (notification.content != null) builder.AddText(notification.content);
@@ -244,6 +244,7 @@ public partial class App
 		var thumbnailUrl = notification.thumbnail_url;
 
 		var scheme = notification.scheme;
+		string tag = null;
 
 		if (scheme.StartsWith("kakaostory://profiles/"))
 		{
@@ -254,6 +255,7 @@ public partial class App
 		else if (notification.scheme.StartsWith("kakaostory://activities/"))
 		{
 			var activityId = GetActivityIdFromNotification(notification);
+			tag = activityId;
 
 			if (string.IsNullOrEmpty(thumbnailUrl))
 			{
@@ -271,8 +273,14 @@ public partial class App
 		if (!string.IsNullOrEmpty(thumbnailUrl))
 			builder.AddHeroImage(new Uri(thumbnailUrl));
 
-		ToastNotificationManager.History.Remove(scheme);
-		var toast = new ToastNotification(builder.GetToastContent().GetXml()) { Tag = scheme };
+		// Remove the previous notification
+		ToastNotificationManagerCompat.History.Remove(scheme);
+
+		// Manually generate the toast notification to set the tag
+		var toast = new ToastNotification(builder.GetToastContent().GetXml());
+		if (tag != null) toast.Tag = tag; // Set the tag if it exists
+
+		// Show the toast notification
 		SharedToastNotifier.Show(toast);
 	}
 

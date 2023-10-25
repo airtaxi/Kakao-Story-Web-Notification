@@ -5,6 +5,7 @@
     <TargetFramework>net7.0-windows10.0.19041.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Version>1.0.1</Version>
+    <AssemblyTitle>카카오스토리 앱 알리미</AssemblyTitle>
     <AssemblyVersion>1.0.1</AssemblyVersion>
     <FileVersion>1.0.1</FileVersion>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
