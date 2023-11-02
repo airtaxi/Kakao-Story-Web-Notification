@@ -4,6 +4,7 @@ using OpenQA.Selenium;
 using System.Net;
 using SeleniumConfigurator;
 using KakaoStoryWebNotification.Api;
+using System.Drawing;
 
 namespace KakaoStoryWebNotification;
 
@@ -49,8 +50,9 @@ public static class LoginManager
 		var options = new EdgeOptions();
 		if (isHeadless) options.AddArgument("headless");
 
-		SeleniumDriver?.Close();
-		SeleniumDriver?.Dispose();
+		try { SeleniumDriver?.Close(); }
+		catch (WebDriverException) { } // If the window is already closed, WebDriverException will be raised. Ignore it.
+		finally { SeleniumDriver?.Dispose(); } // The object should be disposed to prevent memory leak.
 
 		SeleniumDriver = new EdgeDriver(service, options);
 		SeleniumDriver.Navigate().GoToUrl("https://accounts.kakao.com/login/?continue=https://story.kakao.com/");
