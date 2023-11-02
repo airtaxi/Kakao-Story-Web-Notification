@@ -22,6 +22,9 @@ public partial class App
 	private const string AccountCredentialsFileName = "account.json";
 	private const int UpdateCheckIntervalInMinutes = 10;
 
+	// Semi-constants
+	private static readonly string AccountCredentialsFilePath = Path.Combine(AppContext.BaseDirectory, AccountCredentialsFileName);
+
 	// Readonly static fields
 	private static readonly Timer UpdateCheckTimer;
 	private static readonly ToastNotifierCompat SharedToastNotifier;
@@ -148,7 +151,7 @@ public partial class App
 		ApiHandler.OnReloginRequired += () =>
 		{
 			CheckAccountCredentials();
-			var accountCredentials = JsonConvert.DeserializeObject<AccountCredentials>(File.ReadAllText(AccountCredentialsFileName));
+			var accountCredentials = JsonConvert.DeserializeObject<AccountCredentials>(File.ReadAllText(AccountCredentialsFilePath));
 			return LoginManager.LoginWithSelenium(accountCredentials.Email, accountCredentials.Password);
 		};
 	}
@@ -157,7 +160,7 @@ public partial class App
 
 	private static void CheckAccountCredentials()
 	{
-		var fileExists = File.Exists(AccountCredentialsFileName);
+		var fileExists = File.Exists(AccountCredentialsFilePath);
 		if (!fileExists)
 		{
 			var accountCredentials = new AccountCredentials()
@@ -166,7 +169,7 @@ public partial class App
 				Password = "비밀번호를 입력하세요",
 			};
 			var jsonText = JsonConvert.SerializeObject(accountCredentials, Formatting.Indented);
-			File.WriteAllText(AccountCredentialsFileName, jsonText);
+			File.WriteAllText(AccountCredentialsFilePath, jsonText);
 			new ToastContentBuilder()
 				.AddText("설정 파일이 존재하지 않아 새로 생성했습니다.\n프로그램 폴더의 account.json 파일을 수정하신 뒤, 프로그램을 재시작해주세요.")
 				.Show();
@@ -175,7 +178,7 @@ public partial class App
 
 		try
 		{
-			JsonConvert.DeserializeObject<AccountCredentials>(File.ReadAllText(AccountCredentialsFileName));
+			JsonConvert.DeserializeObject<AccountCredentials>(File.ReadAllText(AccountCredentialsFilePath));
 		}
 		catch (JsonException)
 		{
