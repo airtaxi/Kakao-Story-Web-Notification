@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Windows;
 using System.Windows.Threading;
 using Windows.UI.Notifications;
@@ -94,10 +95,32 @@ public partial class App
 
 		// Set the efficiency mode
 		EfficiencyModeUtilities.SetEfficiencyMode(true);
+
+		TempMethod();
 	}
 
-	private void OnTaskSchedulerUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e) => WriteException(e.Exception);
-	private void OnAppDomainUnhandledException(object sender, System.UnhandledExceptionEventArgs e) => WriteException(e.ExceptionObject as Exception);
+
+    private async void TempMethod()
+    {
+		var result = await ApiHandler.GetFriends();
+
+		var stringBuilder = new StringBuilder();
+		stringBuilder.AppendLine($"{DateTime.Now:yyyy년 MM월 dd일 HH시 mm분 ss.fff초} 기준 카카오스토리 이상 현상 기록용 친구 목록 보고서 ({result.profiles.Count}명의 친구)");
+
+
+		foreach (var friend in result.profiles)
+		{
+			var line = $"[{friend.display_name}] 아이디: {friend.id} / 프사 썸네일: {friend.profile_thumbnail_url}";
+			stringBuilder.AppendLine(line);
+		}
+
+		stringBuilder.AppendLine("이상 보고서 작성 완료");
+
+		Clipboard.SetText(stringBuilder.ToString());
+    }
+
+    private void OnTaskSchedulerUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e) => WriteException(e.Exception);
+	private void OnAppDomainUnhandledException(object sender, UnhandledExceptionEventArgs e) => WriteException(e.ExceptionObject as Exception);
 	private void OnApplicationUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
 	{
 		e.Handled = true;
@@ -150,6 +173,7 @@ public partial class App
 	{
 		ApiHandler.OnReloginRequired += () =>
 		{
+			if (LoginManager.IsInLogin) return false;
 			CheckAccountCredentials();
 			var accountCredentials = JsonConvert.DeserializeObject<AccountCredentials>(File.ReadAllText(AccountCredentialsFilePath));
 			return LoginManager.LoginWithSelenium(accountCredentials.Email, accountCredentials.Password);
