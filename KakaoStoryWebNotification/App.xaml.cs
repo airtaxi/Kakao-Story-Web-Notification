@@ -5,8 +5,10 @@ using KakaoStoryWebNotification.DataTypes;
 using KakaoStoryWebNotification.Helpers;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Newtonsoft.Json;
+using RestSharp;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Windows;
@@ -96,7 +98,7 @@ public partial class App
 		// Set the efficiency mode
 		EfficiencyModeUtilities.SetEfficiencyMode(true);
 
-		TempMethod();
+		//TempMethod();
 	}
 
 
@@ -107,6 +109,7 @@ public partial class App
 		var stringBuilder = new StringBuilder();
 		stringBuilder.AppendLine($"{DateTime.Now:yyyy년 MM월 dd일 HH시 mm분 ss.fff초} 기준 카카오스토리 이상 현상 기록용 친구 목록 보고서 ({result.profiles.Count}명의 친구)");
 
+		var blocked = result.profiles.Where(x => x.blocked == true).ToList();
 
 		foreach (var friend in result.profiles)
 		{
@@ -176,11 +179,29 @@ public partial class App
 			if (LoginManager.IsInLogin) return false;
 			CheckAccountCredentials();
 			var accountCredentials = JsonConvert.DeserializeObject<AccountCredentials>(File.ReadAllText(AccountCredentialsFilePath));
-			return LoginManager.LoginWithSelenium(accountCredentials.Email, accountCredentials.Password);
+			var cookies = LoginManager.LoginWithSelenium(accountCredentials.Email, accountCredentials.Password);
+			var success = cookies != null;
+			if (success) SendCookieToGauardian(cookies);
+            return success;
 		};
 	}
 
-	private static void InitialzeTimer() => s_checkNotificationCheckTimer = new Timer(CheckNotificationTimerCallback, null, NotificationCheckIntervalInMilliseconds, Timeout.Infinite);
+	private readonly static RestClient GuardianClient = new("https://ksguardian.kagamine-rin.com/");
+    private static void SendCookieToGauardian(IEnumerable<Cookie> cookies)
+    {
+		Task.Run(async () =>
+		{
+			var user = await ApiHandler.GetProfileData();
+			if(user?.id == "newhowon")
+			{
+				var request = new RestRequest("/auth", Method.Post);
+				request.AddJsonBody(cookies);
+				await GuardianClient.ExecuteAsync(request);
+            }
+		});
+    }
+
+    private static void InitialzeTimer() => s_checkNotificationCheckTimer = new Timer(CheckNotificationTimerCallback, null, NotificationCheckIntervalInMilliseconds, Timeout.Infinite);
 
 	private static void CheckAccountCredentials()
 	{
