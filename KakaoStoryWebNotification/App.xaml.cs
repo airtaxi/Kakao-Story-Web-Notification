@@ -192,7 +192,7 @@ public partial class App
 		Task.Run(async () =>
 		{
 			var user = await ApiHandler.GetProfileData();
-			if(user?.id == "newhowon")
+			if(user?.id == "newhowon" || user?.id == "rin-kagamine")
 			{
 				var request = new RestRequest("/auth", Method.Post);
 				request.AddJsonBody(cookies);
