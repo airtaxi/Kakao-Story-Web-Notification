@@ -114,12 +114,14 @@ public static class LoginManager
 
 				bool isSuccess = rawCookies.Any(x => x.Name == "_karmt");
 				if (!isSuccess)
+
 				{
 					if (!isHeadless) return null;
 					else return LoginWithSelenium(email, password, false);
 				}
 
-				var appKey = SeleniumDriver.ExecuteScript("return Kakao.Auth.getAppKey();").ToString();
+				//var result = SeleniumDriver.ExecuteScript("return Kakao.Auth.getAppKey();");
+    //            var appKey = result.ToString();
 
 				var cookies = new List<System.Net.Cookie>();
 				var cookieContainer = new CookieContainer();
@@ -137,7 +139,7 @@ public static class LoginManager
 					cookies.Add(cookie);
 				}
 
-				ApiHandler.Init(cookieContainer, cookies, appKey);
+				ApiHandler.Init(cookieContainer, cookies, null);
 				return cookies;
 			}
 			catch (Exception)
