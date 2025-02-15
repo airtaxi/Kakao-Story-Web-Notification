@@ -8,6 +8,8 @@
 		<UseWPF>True</UseWPF>
 
 		<Version>1.0.6</Version>
+
+		<Platforms>AnyCPU;ARM64;x64</Platforms>
 	</PropertyGroup>
 
 	<ItemGroup>
